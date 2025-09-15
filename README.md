@@ -1,7 +1,5 @@
 # Rust Cobalt Strike Artifact Kit
 
-[![Release](https://img.shields.io/github/v/release/OWNER/REPO?include_prereleases&sort=semver)](https://github.com/SilentStrikeLab/Rust-Cobalt-Strike-Artifact-Kit)
-[![Downloads](https://img.shields.io/github/downloads/OWNER/REPO/total)](https://github.com/SilentStrikeLab/Rust-Cobalt-Strike-Artifact-Kit)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Rustc](https://img.shields.io/badge/rustc-nightly-blue)](#requirements)
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64-informational)](#requirements)
