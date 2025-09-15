@@ -1,17 +1,137 @@
-# Rust-Cobalt-Strike-Artifact-Kit
+# Rust Cobalt Strike Artifact Kit
 
-#Overview
-Rust Artifact Kit is a sophisticated research framework demonstrating advanced evasion techniques through Rust-based artifact loaders. This project serves as an educational resource for blue teams, security researchers, and incident responders to understand modern loader methodologies and develop effective detection strategies.
+# Rust Shellcode Loader with “Hell’s Gate” (Research / Educational)
 
-Important: This project is for DEFENSIVE RESEARCH AND EDUCATIONAL PURPOSES ONLY. All code is provided as non-executable pseudocode to prevent misuse while enabling thorough defensive analysis.
+[![Release](https://img.shields.io/github/v/release/OWNER/REPO?include_prereleases&sort=semver)](https://github.com/OWNER/REPO/releases)
+[![Downloads](https://img.shields.io/github/downloads/OWNER/REPO/total)](https://github.com/SilentStrikeLab/Rust-Cobalt-Strike-Artifact-Kit)
+[![Build](https://img.shields.io/github/actions/workflow/status/OWNER/REPO/ci.yml?branch=main)](https://github.com/OWNER/REPO/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Rustc](https://img.shields.io/badge/rustc-nightly-blue)](#requirements)
+[![Platform](https://img.shields.io/badge/platform-Windows%20x64-informational)](#requirements)
+[![Maintenance](https://img.shields.io/maintenance/yes/2025)](#)
 
-Key Features
-Zero Static Imports: Runtime API resolution via PEB walking and hash-based lookup
+---
 
-Dual-Section Memory Operations: Separate RW (read-write) and RX (execute-read) views eliminating RWX permission flags
+##  Disclaimer
+This repository is for **defensive research and education only**. It is intended to help blue teams and detection engineers understand telemetry and build signatures around loader-like behavior. **Use only in isolated labs you own/control.** The maintainers are **not responsible** for misuse.
 
-Fiber-Based Execution: Threadless execution avoiding common thread creation signatures
+---
 
-CNA Integration: Marker-based patching system for flexible payload integration
+##  Full Artical
 
-Modern Evasion Techniques: Research implementation of advanced evasion methodologies
+[Check Here](https://blog.silentstrike.io/posts/Advanced-Evasion-in-Rust-ArtifactKit/)
+
+---
+
+## Overview
+A Rust-based loader research project that demonstrates (at a high level):
+
+- **API Hashing** via a DJB2-style algorithm (compile-time constants) to avoid static strings.
+- **Process Discovery** of a trusted service (e.g., `spoolsv.exe`) to illustrate PID enumeration patterns.
+- **Section Mapping (RW→RX)** using `NtCreateSection`/`NtMapViewOfSection` for permission transitions.
+- **Fiber Execution** (Convert→Create→Switch) for stealth-style execution telemetry without creating new threads.
+- **“Hell’s Gate”** concept for direct syscall index resolution (documented; treat responsibly).
+- **Payload Obfuscation** (XOR rotating key) within an embedded `Phear` structure.
+
+> Notes:
+> * The code is for research and may include stubs/guards to prevent weaponization.
+> * Any process-injection discussion is for **defensive analysis** only.
+
+---
+
+## Features
+- **API Hashing:** Compile-time hashing for exports (no plaintext function names).
+- **Process Enumeration:** Finds `spoolsv.exe` (Print Spooler) PID as a demo target.
+- **Section Mapping:** Separates write and execute views (RW→RX) to avoid RWX.
+- **Fiber Trampoline:** Converts current thread to a fiber and switches to a benign entry.
+- **Syscall Concept (“Hell’s Gate”):** Direct index resolution concept (avoid userland hooks) — keep **lab-only**.
+- **Phear Payload Container:** Fixed-size embedded buffer, patchable via external tool for controlled demos.
+
+---
+
+## Requirements
+- **OS:** Windows 10/11 (x64)
+- **Toolchain:** Rust nightly (for inline `asm!`) — see build matrix for alternatives
+- **SDK:** MSVC Build Tools / Windows SDK
+
+---
+
+## Build
+```bash
+# Nightly toolchain
+rustup default nightly
+cargo build --release
+
+# Or with stable (feature-gated, if available)
+cargo build --release --features stable
+```
+
+---
+
+## Usage
+1. (Optional) Patch the embedded `Phear` buffer using your CNA/tooling.
+2. Ensure **Print Spooler** (`spoolsv.exe`) is running.
+3. Run the loader:
+   ```bash
+   cargo run --release
+   ```
+4. Expected behavior (research demo):
+   - Locate `spoolsv.exe` PID
+   - Detect CNA patch state
+   - Create/Map a section (RW, then RX)
+   - Convert thread → fiber, create a fiber, switch to benign entry
+
+> **Important:** Keep testing in a controlled lab. Do **not** run on production/end-user systems.
+
+---
+
+## Payload Structure (`Phear`)
+```rust
+#[repr(C)]
+pub struct Phear {
+    pub offset: i32,         // Payload offset
+    pub length: i32,         // Payload length
+    pub key: [u8; 8],        // XOR key (rotating)
+    pub gmh_offset: i32,     // GetModuleHandle offset (if used)
+    pub gpa_offset: i32,     // GetProcAddress offset (if used)
+    pub payload: [u8; 447702]// Encrypted/placeholder payload
+}
+```
+- The binary embeds a static `Phear` buffer (placeholder data by default).
+- External tooling (e.g., CNA) can patch `offset/length/key/payload` for benign demos.
+- Replace the build bin with Artifact Kit artifact64big.exe
+
+---
+
+## Technical Notes
+### API Hashing
+- DJB2-style hashing avoids string-based IOC signatures.
+- Hashes are compared against export names resolved at runtime.
+
+### Memory Protection & Section Mapping
+- Demonstrates the **RW→RX** transition using sections to avoid direct RWX.
+- Separate RW view for copying, RX view for execution-like telemetry.
+
+### Fiber Execution
+- Uses `ConvertThreadToFiber` → `CreateFiber` → `SwitchToFiber`.
+- Enables telemetry without new thread creation (useful for detections).
+
+### Detection Opportunities (for Blue Teams)
+- Anomalous export resolution patterns / PEB access.
+- Section mapping with immediate permission transitions.
+- Thread-to-fiber conversion frequency and call graph.
+- RW and RX views mapped from same section within short intervals.
+- Abnormal interaction with `spoolsv.exe` (or other system services).
+
+---
+
+## Troubleshooting
+- **`Failed to find spoolsv.exe process`**: Ensure Print Spooler is enabled and running.
+- **Inline asm errors on stable**: Use nightly (`rustup default nightly`) or enable a `stable` feature variant if present.
+- **AV/EDR blocks**: Expected in monitored environments—review telemetry; test in an isolated lab.
+---
+
+## Contributing
+PRs focused on **defensive visibility**, **telemetry**, and **documentation** are welcome. Avoid adding weaponized functionality.
+
+
