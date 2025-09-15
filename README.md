@@ -2,9 +2,8 @@
 
 # Rust Shellcode Loader with “Hell’s Gate” (Research / Educational)
 
-[![Release](https://img.shields.io/github/v/release/OWNER/REPO?include_prereleases&sort=semver)](https://github.com/OWNER/REPO/releases)
+[![Release](https://img.shields.io/github/v/release/OWNER/REPO?include_prereleases&sort=semver)](https://github.com/SilentStrikeLab/Rust-Cobalt-Strike-Artifact-Kit)
 [![Downloads](https://img.shields.io/github/downloads/OWNER/REPO/total)](https://github.com/SilentStrikeLab/Rust-Cobalt-Strike-Artifact-Kit)
-[![Build](https://img.shields.io/github/actions/workflow/status/OWNER/REPO/ci.yml?branch=main)](https://github.com/OWNER/REPO/actions)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Rustc](https://img.shields.io/badge/rustc-nightly-blue)](#requirements)
 [![Platform](https://img.shields.io/badge/platform-Windows%20x64-informational)](#requirements)
@@ -17,7 +16,7 @@ This repository is for **defensive research and education only**. It is intended
 
 ---
 
-##  Full Artical
+##  Full Article
 
 [Check Here](https://blog.silentstrike.io/posts/Advanced-Evasion-in-Rust-ArtifactKit/)
 
