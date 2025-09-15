@@ -12,14 +12,8 @@ This repository is for **defensive research and education only**. It is intended
 
 ---
 
-##  Full Article
-
-[Check Here](https://blog.silentstrike.io/posts/Advanced-Evasion-in-Rust-ArtifactKit/)
-
----
-
 ## Overview
-A Rust-based loader research project that demonstrates (at a high level):
+A Rust-based loader research project that demonstrates (at a high level) you can read [SilentStrike Full Research](https://blog.silentstrike.io/posts/Advanced-Evasion-in-Rust-ArtifactKit/) for more details:
 
 - **API Hashing** via a DJB2-style algorithm (compile-time constants) to avoid static strings.
 - **Process Discovery** of a trusted service (e.g., `spoolsv.exe`) to illustrate PID enumeration patterns.
