@@ -37,7 +37,24 @@ A Rust-based loader research project that demonstrates (at a high level) you can
 - **Syscall Concept (“Hell’s Gate”):** Direct index resolution concept (avoid userland hooks) — keep **lab-only**.
 - **Phear Payload Container:** Fixed-size embedded buffer, patchable via external tool for controlled demos.
 
+<img width="1076" height="599" alt="image" src="https://github.com/user-attachments/assets/abad429a-40cb-4d74-a362-f524616edbb5" />
+
 ---
+
+## Bitdefender Test
+
+<img width="1982" height="680" alt="image" src="https://github.com/user-attachments/assets/cd0e9d5a-bf7d-40fb-bd6f-67ead8fec4d9" />
+
+---
+
+## Scan Results
+
+* [Static Scan Results](https://kleenscan.com/scan_result/2391061e53d2e99d98142946c94eec4d8a28fb6d9e51dc455934d1ca782277c8)
+
+* [Runtime Scan Results](https://kleenscan.com/runtime/scan_result/c5d877bcea52c6dd586121d24b572968f09461312ed371d9fdfc9b7505aadaeb)
+
+
+----
 
 ## Requirements
 - **OS:** Windows 10/11 (x64)
